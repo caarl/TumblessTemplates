@@ -3,7 +3,7 @@ CloudFormation templates to support quicker setup of Tumbless (https://github.co
 
 Save time setting up your S3 bucket and user credentials for Tumbless using an AWS CloudFormation template.
 
-- 1 - Pick a name for your S3 bucket and [Launch Template][a32eeccf] (or [Download Template][def765ae]).
+- 1 - Pick a name for your S3 bucket, [Download][def765ae] and [Launch Template][a32eeccf].
 - 2 - Create IAM credentials for 'SiteAdminS3User' IAM user (see shortcut link under the CloudFormation 'Resources' tab 'Create Access Key' within Security Credentials tab).
 - 3 - Download a copy of Tumbless (https://github.com/matteobrusa/Tumbless).
 - 4 - Update Public/admin.json with S3 bucket name and IAM credentials.
