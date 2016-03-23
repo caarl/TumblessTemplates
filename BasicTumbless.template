@@ -1,0 +1,142 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Basic Template for configuring your AWS S3 bucket and IAM for Tumbless",
+  "Parameters": {
+    "S3BucketName": {
+      "Description": "Name of the S3 bucket to use for your site.",
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Mappings": {},
+  "Resources": {
+    "S3BucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "S3Bucket"
+        },
+        "PolicyDocument": {
+          "Version": "2008-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowPublicRead",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Action": "s3:GetObject",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "S3Bucket"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Ref": "S3BucketName"
+        },
+        "CorsConfiguration": {
+          "CorsRules": [
+            {
+              "AllowedHeaders": [
+                "*"
+              ],
+              "AllowedMethods": [
+                "PUT",
+                "POST"
+              ],
+              "AllowedOrigins": [
+                "*"
+              ],
+              "ExposedHeaders": [
+                "ETag",
+                "x-amz-meta-custom-header"
+              ]
+            }
+          ]
+        },
+        "WebsiteConfiguration": {
+          "IndexDocument": "index.html"
+        }
+      }
+    },
+    "ManageIamUsers": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "Groups": [
+          {
+            "Ref": "SiteAdminIamGroup"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "Stmt1455229604000",
+              "Effect": "Allow",
+              "Action": [
+                "s3:PutObject"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3Bucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "PolicyName": "TumblessS3BucketPUT"
+      }
+    },
+    "SiteAdminIamGroup": {
+      "Type": "AWS::IAM::Group",
+      "Properties": {
+        "Path": "/Tumbless/"
+      }
+    },
+    "SiteAdminS3User": {
+      "Type": "AWS::IAM::User",
+      "Properties": {
+        "Path": "/Tumbless/",
+        "Groups": [
+          {
+            "Ref": "SiteAdminIamGroup"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "Usage instructions": {
+      "Description": "See link for guide to using this template.  See resources tab for links to your S3 bucket and new IAM user.",
+      "Value": "https://github.com/caarl/TumblessTemplates"
+    },
+    "TumblessSourceCode": {
+      "Description": "See Tumbless source code and docs on GitHub",
+      "Value": "https://github.com/matteobrusa/Tumbless"
+    }
+  }
+}
